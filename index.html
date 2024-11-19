@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор зарплаты</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Калькулятор зарплаты</h1>
+        <p>Выберите тип расчета:</p>
+        <div class="options">
+
+            <label>
+                <input type="radio" name="calculationType" value="net">
+                По нетто (после вычета налогов)
+            </label>
+        </div>
+        <div class="input-section">
+            <label for="salaryInput">Введите сумму зарплаты:</label>
+            <input type="number" id="salaryInput" placeholder="Введите сумму" min="0">
+        </div>
+        <button id="calculateButton">Рассчитать</button>
+        <div class="results" style="display: none;">
+            <h2>Результаты расчета</h2>
+            <div id="grossSalary"></div>
+            <div id="incomeTax"></div>
+            <div id="pensionContribution"></div>
+            <div id="socialContribution"></div>
+            <div id="totalCost"></div>
+            <div id="explanation"></div>
+        </div>
+    </div>
+    <script src="taxCalculator.js"></script>
+</body>
+</html>
