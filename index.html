@@ -9,14 +9,20 @@
 <body>
     <div class="container">
         <h1>Калькулятор зарплаты</h1>
-        <p>Выберите тип расчета:</p>
-        <div class="options">
-
-            <label>
-                <input type="radio" name="calculationType" value="net">
-                По нетто (после вычета налогов)
-            </label>
+        <p>Выберите регион:</p>
+        <div class="region-selection">
+            <label><input type="radio" name="region" value="0.4"> Республика Алтай (40%)</label><br>
+            <label><input type="radio" name="region" value="0.25"> Алтайский край (25%)</label><br>
+            <label><input type="radio" name="region" value="0.3"> Амурская область (30%)</label><br>
+            <label><input type="radio" name="region" value="0.4"> Архангельская область (40%)</label><br>
+            <label><input type="radio" name="region" value="0.35"> Астраханская область (35%)</label><br>
+            <label><input type="radio" name="region" value="0.25"> Вологодская область (25%)</label><br>
+            <label><input type="radio" name="region" value="0.4"> Забайкальский край (40%)</label><br>
+            <label><input type="radio" name="region" value="0.7"> Иркутская область (70%)</label><br>
+            <label><input type="radio" name="region" value="0.8"> Красноярский край (80%)</label><br>
+            <label><input type="radio" name="region" value="0.15" checked> Урал (15%)</label><br>
         </div>
+
         <div class="input-section">
             <label for="salaryInput">Введите сумму зарплаты:</label>
             <input type="number" id="salaryInput" placeholder="Введите сумму" min="0">
@@ -27,7 +33,7 @@
             <div id="grossSalary"></div>
             <div id="incomeTax"></div>
             <div id="pensionContribution"></div>
-            <div id="socialContribution"></div>
+            <div id="regionalCoefficient"></div>
             <div id="totalCost"></div>
             <div id="explanation"></div>
         </div>

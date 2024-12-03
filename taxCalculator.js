@@ -1,4 +1,4 @@
-function calculateFullCost(netSalary) {
+function calculateFullCost(netSalary, regionRate) {
     const CONTRIBUTION_RATE = 0.076;
 
     // Диапазоны и ставки НДФЛ
@@ -16,24 +16,20 @@ function calculateFullCost(netSalary) {
     // Рассчет НДФЛ по каждому диапазону
     for (let i = 0; i < TAX_RANGES.length; i++) {
         const { threshold, rate } = TAX_RANGES[i];
-        const lowerLimit = i === 0 ? 0 : TAX_RANGES[i - 1].threshold; // Нижняя граница текущего диапазона
+        const lowerLimit = i === 0 ? 0 : TAX_RANGES[i - 1].threshold;
 
-        // Сколько мы можем "поместить" в текущий диапазон
         const taxableAmount = Math.min(
-            Math.max(0, netSalary - lowerLimit), // Сколько "чистой" зарплаты осталось после вычета предыдущих диапазонов
-            threshold - lowerLimit // Размер текущего диапазона
+            Math.max(0, netSalary - lowerLimit),
+            threshold - lowerLimit
         );
 
         if (taxableAmount > 0) {
-            // Расчет "грязной" суммы для текущего диапазона
             const grossForRange = taxableAmount / (1 - rate);
             grossSalary += grossForRange;
 
-            // Расчет НДФЛ для текущего диапазона
             const ndflForRange = grossForRange - taxableAmount;
             ndflAmount += ndflForRange;
 
-            // Сохраняем детали
             detailedTaxes.push({
                 range: i === 0
                     ? `От 0 до ${threshold.toLocaleString()} руб.`
@@ -43,19 +39,20 @@ function calculateFullCost(netSalary) {
                 ndflForThisPart: ndflForRange,
             });
 
-            remainingNetSalary -= taxableAmount; // Уменьшаем остаток
+            remainingNetSalary -= taxableAmount;
         }
     }
 
-    // Полная зарплата
     const contributions = grossSalary * CONTRIBUTION_RATE;
-    const totalCost = grossSalary + contributions;
+    const regionalBonus = netSalary * regionRate;
+    const totalCost = grossSalary + contributions + regionalBonus;
 
     return {
         salary: netSalary,
         grossSalary,
         ndflAmount,
         contributions,
+        regionalBonus,
         totalCost,
         detailedTaxes,
     };
@@ -63,15 +60,15 @@ function calculateFullCost(netSalary) {
 
 document.getElementById("calculateButton").addEventListener("click", () => {
     const salaryInput = parseFloat(document.getElementById("salaryInput").value);
+    const regionRate = parseFloat(document.querySelector('input[name="region"]:checked').value);
 
     if (isNaN(salaryInput) || salaryInput <= 0) {
         alert("Введите корректную сумму зарплаты.");
         return;
     }
 
-    const result = calculateFullCost(salaryInput);
+    const result = calculateFullCost(salaryInput, regionRate);
 
-    // Отображаем результаты в соответствующих блоках
     document.getElementById("grossSalary").innerHTML = `
         <strong>Зарплата с НДФЛ (брутто):</strong> ${result.grossSalary.toFixed(2)} руб.
     `;
@@ -81,11 +78,13 @@ document.getElementById("calculateButton").addEventListener("click", () => {
     document.getElementById("pensionContribution").innerHTML = `
         <strong>Страховые взносы (7.6%):</strong> ${result.contributions.toFixed(2)} руб.
     `;
+    document.getElementById("regionalCoefficient").innerHTML = `
+        <strong>Районный коэффициент:</strong> ${result.regionalBonus.toFixed(2)} руб.
+    `;
     document.getElementById("totalCost").innerHTML = `
         <strong>Полная стоимость сотрудника:</strong> ${result.totalCost.toFixed(2)} руб.
     `;
 
-    // Подробная детализация НДФЛ
     let explanation = `<strong>Детализация расчета НДФЛ:</strong><br>`;
     result.detailedTaxes.forEach((item) => {
         explanation += `
@@ -100,6 +99,5 @@ document.getElementById("calculateButton").addEventListener("click", () => {
 
     document.getElementById("explanation").innerHTML = explanation;
 
-    // Показываем блок с результатами
     document.querySelector(".results").style.display = "block";
 });
